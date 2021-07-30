@@ -4,6 +4,8 @@ import morgan from 'morgan'
 
 import connectDB from './config/db.js'
 import { graphqlHTTP } from 'express-graphql'
+import graphQLSchema from './graphql/schema.js'
+import graphQLResolvers from './graphql/resolver.js'
 
 dotenv.config()
 
