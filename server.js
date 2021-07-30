@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import morgan from 'morgan'
 
 import connectDB from './config/db.js'
+import cors from './middleware/cors.js'
 import { graphqlHTTP } from 'express-graphql'
 import graphQLSchema from './graphql/schema.js'
 import graphQLResolvers from './graphql/resolver.js'
@@ -28,7 +29,7 @@ app.use(
         schema: graphQLSchema,
         rootValue: graphQLResolvers,
         graphiql: true,
-        formatError(err) {
+        customFormatErrorFn(err) {
             if (!err.originalError) {
                 return error
             }
