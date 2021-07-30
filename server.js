@@ -20,6 +20,8 @@ if (ENV === 'development') {
     app.use(morgan('dev'))
 }
 
+app.use(cors)
+
 app.use(
     '/graphql',
     graphqlHTTP({
