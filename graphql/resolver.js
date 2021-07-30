@@ -1,4 +1,6 @@
 import validator from 'validator';
+
+import generateToken from '../utils/generateToken.js'
 import User from '../models/user.js';
 
 export default {
@@ -33,5 +35,17 @@ export default {
         })
 
         return { ...user._doc, _id: user._id.toString() };
-    }
+    },
+    login: async function({ email, password }) {
+        const user = await User.findOne({ email });
+
+        if (user && (await user.matchPassword(password))) {
+            const token = generateToken(user._id)
+            return  { token, userId: user._id.toString() }
+        }
+
+        const error = new Error('Invalid credentials.');
+        error.code = 401;
+        throw error;
+    }, 
 }
