@@ -96,15 +96,11 @@ export default {
 
         return { ...post._doc, _id: post._id.toString() };
     },
-    posts: async function({ page }, req) {
+    posts: async function({ page=1 }, req) {
         if (!req.isAuth) {
             const error = new Error('Not authenticated!')
             error.code = 401
             throw error
-        }
-
-        if (!page) {
-            page = 1
         }
 
         const perPage = 2;
