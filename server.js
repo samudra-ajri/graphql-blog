@@ -7,6 +7,7 @@ import cors from './middleware/cors.js'
 import { graphqlHTTP } from 'express-graphql'
 import graphQLSchema from './graphql/schema.js'
 import graphQLResolvers from './graphql/resolver.js'
+import auth from './middleware/auth.js'
 
 dotenv.config()
 
@@ -22,6 +23,7 @@ if (ENV === 'development') {
 }
 
 app.use(cors)
+app.use(auth);
 
 app.use(
     '/graphql',

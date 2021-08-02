@@ -51,7 +51,13 @@ export default {
     }, 
     createPost: async ({ postInput }, req) => {
         const { title, imageUrl, content } = postInput
-
+        
+        if (!req.isAuth) {
+            const error = new Error('Not authenticated!');
+            error.code = 401;
+            throw error;
+        }
+        
         const errors = [];
         if (validator.isEmpty(title) || !validator.isLength(title, { min:6 })) {
             errors.push({ message: 'Title to short.' })
@@ -72,12 +78,74 @@ export default {
             throw error
         }
 
+        const user = await User.findById(req.userId)
+        if (!user) {
+            const error = new Error('Invalid user.')
+            error.code = 401;
+            throw error;
+        }
+
         const post = await Post.create({
             title,
             imageUrl,
-            content
+            content,
+            creator: user
         })
+        user.posts.push(post);
+        await user.save();
 
         return { ...post._doc, _id: post._id.toString() };
+    },
+    posts: async function({ page=1 }, req) {
+        if (!req.isAuth) {
+            const error = new Error('Not authenticated!')
+            error.code = 401
+            throw error
+        }
+
+        const perPage = 2;
+        const totalPosts = await Post.find().countDocuments()
+        const posts = await Post.find()
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .populate('creator')
+
+        return {
+            posts: posts.map(post => {
+                return {
+                    ...post._doc,
+                    _id: post._id.toString()
+                }
+            }),
+            totalPosts: totalPosts
+        };
+    },
+    deletePost: async ({ id }, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Not authenticated!')
+            error.code = 401
+            throw error
+        }
+        
+        const postExists = await Post.findOne({ id })
+        if (!postExists) {
+            throw new Error('Post not found.')
+            error.code = 404;
+            throw error;
+        }
+
+        if (post.creator.toString() !== req.userId.toString()) {
+            const error = new Error('Not authorized!');
+            error.code = 403;
+            throw error;
+        }
+
+        await Post.findByIdAndRemove({ id })
+        const user = await User.findById(req.userId);
+        user.posts.pull(id);
+        await user.save();
+
+        return true
     }
 }
