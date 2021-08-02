@@ -30,7 +30,7 @@ app.use(
     graphqlHTTP({
         schema: graphQLSchema,
         rootValue: graphQLResolvers,
-        graphiql: true,
+        graphiql: false,
         customFormatErrorFn(err) {
             if (!err.originalError) {
                 return error
