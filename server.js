@@ -25,7 +25,9 @@ if (ENV === 'development') {
 app.use(cors)
 app.use(auth);
 
-app.use('/', res.json({message: "welcome to the gang"}));
+app.get('/', (req, res) => {
+    res.send('Hello World')
+});
 
 app.use(
     '/graphql',
