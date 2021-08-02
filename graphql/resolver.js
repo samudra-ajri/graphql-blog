@@ -128,20 +128,20 @@ export default {
             throw error
         }
         
-        const postExists = await Post.findOne({ id })
+        const postExists = await Post.findById(id)
         if (!postExists) {
             throw new Error('Post not found.')
             error.code = 404;
             throw error;
         }
 
-        if (post.creator.toString() !== req.userId.toString()) {
+        if (postExists.creator.toString() !== req.userId.toString()) {
             const error = new Error('Not authorized!');
             error.code = 403;
             throw error;
         }
 
-        await Post.findByIdAndRemove({ id })
+        await Post.findByIdAndRemove(id)
         const user = await User.findById(req.userId);
         user.posts.pull(id);
         await user.save();
