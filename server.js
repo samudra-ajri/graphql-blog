@@ -9,6 +9,9 @@ import graphQLSchema from './graphql/schema.js'
 import graphQLResolvers from './graphql/resolver.js'
 import auth from './middleware/auth.js'
 
+import expressPlayground from 'graphql-playground-middleware-express'
+const graphQLPlayground = expressPlayground.default
+
 dotenv.config()
 
 connectDB()
@@ -29,23 +32,26 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+
 app.use(
     '/graphql',
     graphqlHTTP({
         schema: graphQLSchema,
         rootValue: graphQLResolvers,
-        graphiql: true,
+        graphiql: false,
         customFormatErrorFn(err) {
             if (!err.originalError) {
                 return error
             }
-
+            
             const data = err.originalError.data
             const message = err.message || 'An error occurred.'
             const code = err.originalError.code || 500
             return { message, status: code, data }
         }
     }),
-)
-
-app.listen(PORT, console.log(`Server running in ${ENV} mode on port ${PORT}`))
+    )
+    app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }))
+    
+    app.listen(PORT, console.log(`Server running in ${ENV} mode on port ${PORT}`))
+    
