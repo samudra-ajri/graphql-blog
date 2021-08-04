@@ -50,8 +50,8 @@ app.use(
             return { message, status: code, data }
         }
     }),
-    )
-    app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }))
-    
-    app.listen(PORT, console.log(`Server running in ${ENV} mode on port ${PORT}`))
+)
+app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }))
+
+app.listen(PORT, console.log(`Server running in ${ENV} mode on port ${PORT}`))
     
