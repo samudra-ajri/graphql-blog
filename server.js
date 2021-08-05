@@ -1,10 +1,10 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
+import cors from 'cors'
+import { graphqlHTTP } from 'express-graphql'
 
 import connectDB from './config/db.js'
-import cors from './middleware/cors.js'
-import { graphqlHTTP } from 'express-graphql'
 import graphQLSchema from './graphql/schema.js'
 import graphQLResolvers from './graphql/resolver.js'
 import auth from './middleware/auth.js'
@@ -25,7 +25,7 @@ if (ENV === 'development') {
     app.use(morgan('dev'))
 }
 
-app.use(cors)
+app.use(cors())
 app.use(auth);
 
 app.get('/', (req, res) => {
