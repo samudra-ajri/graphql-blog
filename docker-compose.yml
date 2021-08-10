@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  mongo:
+    container_name: mongo_container
+    image: ${MONGO_IMAGE}
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+    #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+        - mongodb:/data/db
+        - mongodb_config:/data/configdb
+    networks:
+      - graphql-learning-network
+
+  postgres:
+    container_name: postgres_container
+    image: ${PG_IMAGE}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - /data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - graphql-learning-network
+
+  api:
+    container_name: api_container
+    image: graph_api
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+        - "5000:5000"
+    volumes: 
+        - .:/app
+        - /app/node_modules
+    links: 
+        - mongo
+        - postgres
+    restart: always
+    depends_on: 
+        - mongo
+    environment: 
+        MONGODB_URI: ${MONGO_URI}
+    networks: 
+        - graphql-learning-network
+
+volumes:
+    mongodb:
+    mongodb_config:
+
+networks: 
+    graphql-learning-network:
+      driver: bridge
