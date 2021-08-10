@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /data/postgres
     volumes:
-      - /data/postgres
+      - postgres:/data/postgres
     ports:
       - "5432:5432"
     networks:
@@ -58,6 +58,7 @@ services:
 volumes:
     mongodb:
     mongodb_config:
+    postgres:
 
 networks: 
     graphql-learning-network:
