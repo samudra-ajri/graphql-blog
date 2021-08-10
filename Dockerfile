@@ -4,8 +4,7 @@ WORKDIR /app
 
 COPY package*.json /app/
 
-RUN npm install && npm install -g sequelize-cli
-RUN npm install --save sequelize
+RUN npm install
 
 COPY . .
 
