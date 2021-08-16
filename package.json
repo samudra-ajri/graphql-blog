@@ -2,7 +2,6 @@
   "name": "graphql-blog",
   "version": "1.0.0",
   "description": "simple graphQL CRUD with express and mongodb",
-  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server",

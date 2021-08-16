@@ -1,16 +1,14 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import morgan from 'morgan'
-import cors from 'cors'
-import { graphqlHTTP } from 'express-graphql'
+const express = require('express')
+const dotenv = require('dotenv')
+const morgan = require('morgan')
+const cors = require('cors')
+const { graphqlHTTP } = require('express-graphql')
 
-import connectDB from './config/db.js'
-import graphQLSchema from './graphql/schema.js'
-import graphQLResolvers from './graphql/resolver.js'
-import auth from './middleware/auth.js'
-
-import expressPlayground from 'graphql-playground-middleware-express'
-const graphQLPlayground = expressPlayground.default
+const connectDB = require('./config/db.js')
+const graphQLSchema = require('./graphql/schema.js')
+const graphQLResolvers = require('./graphql/resolver.js')
+const auth = require('./middleware/auth.js')
+const expressPlayground = require('graphql-playground-middleware-express').default
 
 dotenv.config()
 
@@ -32,7 +30,6 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
-
 app.use(
     '/graphql',
     graphqlHTTP({
@@ -51,7 +48,7 @@ app.use(
         }
     }),
 )
-app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }))
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 
 app.listen(PORT, console.log(`Server running in ${ENV} mode on port ${PORT}`))
     
